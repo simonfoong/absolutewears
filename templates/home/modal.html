@@ -22,9 +22,9 @@
     </div>
   </div> -->
 
-<div class="text-center">
+<!-- <div class="text-center">
     <p>Click here to exit</p>
-</div>
+</div> -->
 <div class="modal is-visible" id="modal" _="on closeModal add .closing then wait for animationend then remove me">
 
     <div class="modal-dialog quickview__main--wrapper">
@@ -32,8 +32,57 @@
             <p>Click Outside box to exit</p>
         </div>
         <header class="modal-header quickview__header">
-            <button class="close-modal quickview__close--btn" _="on click trigger closeModal">✕ </button>
+            <button class="close-modal quickview__close--btn" _="on click trigger closeModal"  onclick="closeModal()">✕ </button>
         </header>
+
+        <!-- <div class="product__section--inner product__swiper--column4__activation swiper">
+            <div class="swiper-wrapper">
+                {% for rs in images %}
+                <div class="swiper-slide">
+                    <div class="product__items ">
+                        <div class="product__items--thumbnail">
+                            <a class="product__items--link" href="">
+                                <img class="product__items--img product__primary--img"
+                                    src="{{rs.image.url}}" alt="product-img">
+                               
+                            </a>
+                          
+                        </div>
+                        
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper__nav--btn swiper-button-next"></div>
+            <div class="swiper__nav--btn swiper-button-prev"></div>
+        </div> -->
+        <!-- <section class="product__section product__section--style3 section--padding">
+            <div class="container product3__section--container">
+                
+                <div class="product__section--inner product__swiper--column4__activation swiper">
+                    <div class="swiper-wrapper">
+                        {% for rs in images %}
+                        <div class="swiper-slide">
+                            <div class="product__items ">
+                                <div class="product__items--thumbnail">
+                                    <a class="product__items--link" href="">
+                                        <img class="product__items--img product__primary--img"
+                                            src="{{rs.image.url}}" alt="product-img">
+                                        
+                                    </a>
+                                   
+                                </div>
+                             
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper__nav--btn swiper-button-next"></div>
+                    <div class="swiper__nav--btn swiper-button-prev"></div>
+                </div>
+            </div>
+        </section> -->
+        
         <img src="{{product.image.url}}" alt="" style="width: 100%;">
         <div class="quickview__info mt-5">
             <form action="/addtoshopcart/{{ product.id }}" method="post">

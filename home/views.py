@@ -25,9 +25,11 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         featured = Product.objects.all().order_by('?')[:20]
+        sneakers = Product.objects.filter(category='Sneakers').order_by('?')[:20]
         
         context.update({'title': 'homepage',
-                    'featured': featured
+                    'featured': featured,
+                    'sneakers': sneakers,
                         })
         return context
 

@@ -589,6 +589,7 @@
             </div>
        
         </div>
+        {% if shopcart %}
         <div class="minicart__product">
             {% for rs in shopcart %}
             <div class="minicart__product--items d-flex">
@@ -641,6 +642,10 @@
             <a class="primary__btn minicart__button--link" href="{% url 'shopcart' %}">View cart</a>
             <a class="primary__btn minicart__button--link" href="{% url 'checkout' %}">Checkout</a>
         </div>
+        {% else %}
+
+        <h4>Cart is Empty</h4>
+        {% endif %}
     </div>
     <!-- End offCanvas minicart -->
 
