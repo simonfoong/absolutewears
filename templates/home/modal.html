@@ -1,0 +1,147 @@
+{% load static %}
+{% load humanize %}
+<div id="modal-backdrop" class="show"></div>
+
+<!-- <div class="modal is-visible" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <img src="{{product.image.url}}" alt="">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+<div class="text-center">
+    <p>Click here to exit</p>
+</div>
+<div class="modal is-visible" id="modal" _="on closeModal add .closing then wait for animationend then remove me">
+
+    <div class="modal-dialog quickview__main--wrapper">
+        <div class="text-center">
+            <p>Click Outside box to exit</p>
+        </div>
+        <header class="modal-header quickview__header">
+            <button class="close-modal quickview__close--btn" _="on click trigger closeModal">✕ </button>
+        </header>
+        <img src="{{product.image.url}}" alt="" style="width: 100%;">
+        <div class="quickview__info mt-5">
+            <form action="/addtoshopcart/{{ product.id }}" method="post">
+                <h2 class="product__details--info__title mb-15">{{product.title}}</h2>
+                <div class="product__details--info__price mb-10">
+                    <span class=" text__secondary"><strong>₦{{product.price|intcomma}}</strong></span>
+
+                </div>
+
+                <p class="product__details--info__desc mb-15">{{product.description}}</p>
+                <div class="product__variant">
+
+                    
+
+
+                    {% if  product.variant != 'None'   %}
+                   
+                       
+                    
+                      
+                        <br>
+                       
+
+                        <a class="form-control primary__btn text-center" href="{% url 'product_detail' product.id product.slug %}">View item variations</a>
+
+
+
+                   
+
+                    {% else %}
+
+                    <form action="/addtoshopcart/{{ product.id }}" method="post" id="addchart-form"
+                        class="product__params">
+                        {% csrf_token %}
+
+                        <div id="SelectedProduct">
+                            <label class="control-label mt-20"
+                            for="select-size"><strong>Availability</strong>:
+                            {% if product.amount > 0  %} In
+                            Stock
+                            {% else %} Out of Stock {% endif %} </label>
+
+
+                            <div class="product__variant--list quantity d-flex align-items-center mt-20 mb-20">
+
+
+
+                                <a class="form-control primary__btn text-center" href="{% url 'product_detail' product.id product.slug %}"> View item variations</a>
+
+                            </div>
+
+
+                            
+                            <a class="form-control primary__btn text-center" href="{% url 'add_to_cart' product.id %}"><svg class="product__items--action__btn--svg"
+                                xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443"
+                                viewBox="0 0 14.706 13.534">
+                                <g transform="translate(0 0)">
+                                    <g>
+                                        <path data-name="Path 16787"
+                                            d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z"
+                                            transform="translate(0 -463.248)"
+                                            fill="currentColor"></path>
+                                        <path data-name="Path 16788"
+                                            d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z"
+                                            transform="translate(-1.191 -466.622)"
+                                            fill="currentColor"></path>
+                                        <path data-name="Path 16789"
+                                            d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z"
+                                            transform="translate(-2.875 -466.622)"
+                                            fill="currentColor"></path>
+                                    </g>
+                                </g>
+                            </svg> + Add to cart</a>
+
+                        </div>
+                    </form>
+
+
+
+                    {% endif %}
+
+
+
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function closeModal() {
+        var container = document.getElementById("modals-here")
+        var backdrop = document.getElementById("modal-backdrop")
+        var modal = document.getElementById("modal")
+
+        modal.classList.remove("is-visible")
+        backdrop.classList.remove("show")
+
+        setTimeout(function () {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
+        }, 200)
+    }
+
+    $(document).ready(function () {
+        $(".owl-carousel").owlCarousel();
+    });
+</script>

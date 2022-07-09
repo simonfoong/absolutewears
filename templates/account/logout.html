@@ -1,0 +1,107 @@
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load socialaccount %}
+
+{% get_providers as socialaccount_providers %}
+
+<!doctype html>
+<html class="no-js" lang="">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Logout - Igwe's Palace Restaurant</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static '' %}assets-email/img/favicon.png">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static '' %}assets-email/css/bootstrap.min.css">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static '' %}assets-email/css/fontawesome-all.min.css">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="{% static '' %}assets-email/font/flaticon.css">
+    <!-- Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static '' %}assets-email/style.css">
+</head>
+
+<body>
+
+
+
+    <div id="preloader" class="preloader">
+        <div class='inner'>
+            <div class='line1'></div>
+            <div class='line2'></div>
+            <div class='line3'></div>
+        </div>
+    </div>
+    <section class="fxt-template-animation fxt-template-layout20">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-7 col-lg-6 col-12 fxt-none-991 fxt-bg-img"
+                    data-bg-image="{% static '' %}assets-email/img/figure/bg20-l.jpg"></div>
+                <div class="col-xl-5 col-lg-6 col-12 fxt-bg-color">
+                    <div class="fxt-content">
+                        <div class="fxt-header">
+                            <a href="login-20.html" class="fxt-logo"><img
+                                    src="{% static '' %}assets-email/img/logo-20.png" alt="Logo"></a>
+
+
+                            <h1>{% trans 'Are you sure you want to sign out?' %}</h1>
+
+
+
+
+                        </div>
+                        <div class="fxt-form">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <!-- <button type="submit">{% trans "Continue" %}</button> -->
+                                <div class="form-group">
+                                    {% csrf_token %}
+                                    {% if redirect_field_value %}
+                                    <input type="hidden" name="{{ redirect_field_name }}"
+                                        value="{{ redirect_field_value }}" />
+                                    {% endif %}
+                                    <div class="fxt-transformY-50 fxt-transition-delay-4">
+                                        <button type="submit"
+                                            class="fxt-btn-fill btn-danger">{% trans 'Sign Out' %}</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="fxt-transformY-50 fxt-transition-delay-4">
+                                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex omnis quod,
+                                            consectetur aperiam natus ut officia saepe pariatur quos neque!</p>
+
+                                    </div>
+                                </div>
+
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- jquery-->
+    <script src="{% static '' %}assets-email/js/jquery-3.5.0.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static '' %}assets-email/js/bootstrap.min.js"></script>
+    <!-- Imagesloaded js -->
+    <script src="{% static '' %}assets-email/js/imagesloaded.pkgd.min.js"></script>
+    <!-- Validator js -->
+    <script src="{% static '' %}assets-email/js/validator.min.js"></script>
+    <!-- Custom Js -->
+    <script src="{% static '' %}assets-email/js/main.js"></script>
+
+</body>
+
+
+</html>

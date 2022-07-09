@@ -1,0 +1,20 @@
+{% load humanize %}
+
+
+
+<label><strong>Colors</strong></label>
+                                        <ul class="filter-color">
+                                            {% for rs in colors %}
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" type="radio"
+                                                    {% if variant.id == rs.id %} checked {% endif %} name="variantid" id="variantid"
+                                                    value="{{ rs.id }}" onchange="this.form.submit();" />
+                                                <label class="form-check-label pl-1 pr-1" for="inlineRadio1"
+                                                    style="background-color:{{ rs.color.code }}; color: #D9D9D9; text-shadow: 1px 1px #000000; width: 100% ">₦{{ rs.price|intcomma }}
+                                                    - {{ rs.color }}</label>
+                                            </div>
+                                            {% endfor %}
+            
+                                        </ul>
+
+
