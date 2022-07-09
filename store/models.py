@@ -1,6 +1,7 @@
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 # from django.forms import ModelForm
@@ -132,7 +133,10 @@ class Product(models.Model):
 
     def image2(self):
         i = Images.objects.filter(product_id=self.id).last()
-        return i.image.url
+        if i:
+            return i.image.url
+        else:
+            return HttpResponse('')
 
 
 class Images(models.Model):

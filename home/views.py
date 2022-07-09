@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.views.generic import View, ListView
 
+
 from home.models import ContactMessage, ContactForm, Gallery, Faqs
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from store.models import Product, Images
+from store.models import Product, Images, Category
 
 # Create your views here.
 class IndexView(ListView):
@@ -25,12 +26,18 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         featured = Product.objects.all().order_by('?')[:20]
-        sneakers = Product.objects.filter(category='Sneakers').order_by('?')[:20]
+        # sneakers = []
+        sneakers = Product.objects.filter(category__title='Sneakers').order_by('?')[:20]
+        # print(sneaks)
+        # for rs in sneaks:
+        #     if rs.variant == 'None':
+        #         sneakers.append(rs)
         
         context.update({'title': 'homepage',
                     'featured': featured,
                     'sneakers': sneakers,
                         })
+        print(sneakers)
         return context
 
 
