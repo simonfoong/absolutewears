@@ -8039,6 +8039,84 @@ input.quickview__value--number {
     }
 }
 
+
+
+
+
+
+
+
+
+
+.breadcrumb__bg2 {
+    background: url(../img/banner/banner5.png);
+    background-repeat: no-repeat;
+    height: 130px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative
+}
+
+@media only screen and (min-width:480px) {
+    .breadcrumb__bg2 {
+        height: 150px
+    }
+}
+
+@media only screen and (min-width:576px) {
+    .breadcrumb__bg2 {
+        height: 170px
+    }
+}
+
+@media only screen and (min-width:768px) {
+    .breadcrumb__bg2 {
+        height: 190px
+    }
+}
+
+@media only screen and (min-width:992px) {
+    .breadcrumb__bg2 {
+        height: 220px
+    }
+}
+
+@media only screen and (min-width:1200px) {
+    .breadcrumb__bg2 {
+        height: 270px
+    }
+}
+
+@media only screen and (min-width:1600px) {
+    .breadcrumb__bg2 {
+        height: 300px
+    }
+}
+
+@media only screen and (max-width:1600px) {
+    .breadcrumb__bg2 {
+        background-position: center center;
+        background-size: cover
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .breadcrumb__content {
     position: relative
 }

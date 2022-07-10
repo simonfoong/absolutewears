@@ -15,11 +15,11 @@
             <div class="row row-cols-1">
                 <div class="col">
                     <div class="breadcrumb__content text-center">
-                        <h1 class="breadcrumb__content--title text-white mb-25">Product Details</h1>
+                        <h1 class="breadcrumb__content--title text-white mb-25">Item Details</h1>
                         <ul class="breadcrumb__content--menu d-flex justify-content-center">
                             <li class="breadcrumb__content--menu__items"><a class="text-white"
-                                    href="index.html">Home</a></li>
-                            <li class="breadcrumb__content--menu__items"><span class="text-white">Product Details</span>
+                                    href="{% url 'store' %}">Store</a></li>
+                            <li class="breadcrumb__content--menu__items"><span class="text-white">Item Details</span>
                             </li>
                         </ul>
                     </div>
@@ -190,6 +190,10 @@
                                         <label class="control-label" for="select-size"><strong>Selected</strong>: Size :
                                             {{ variant.size }}
                                             - Color : {{ variant.color }}</label>
+                                        {% if variant.quantity < 10  %}
+                                        <label class="control-label" for="select-size"><strong>Items Left</strong>:
+                                            {{ variant.quantity }}</label>
+                                        {% endif %}
 
 
                                     </div>
@@ -204,9 +208,12 @@
                                                 id="input-default"></div>
                                     </div>
 
-
-                                    <button class="form-control primary__btn" type="submit" {% if variant.amount < 1  %}
-                                        disabled {% endif %}>Add To Cart</button>
+                                    <!-- {% if variant.quantity < 1  %}
+                                    <button class="form-control primary__btn" type="submit" disabled>Add To
+                                        Cart</button>
+                                    {% else %}
+                                    <button class="form-control primary__btn" type="submit">Add To Cart</button>
+                                    {% endif %} -->
 
 
 
@@ -214,43 +221,41 @@
 
                                 {% else %}
 
-                                <form action="/addtoshopcart/{{ product.id }}"  method="POST" id="addchart-form"
-                                class="product__params">
+                                <form action="/addtoshopcart/{{ product.id }}" method="POST" id="addchart-form"
+                                    class="product__params">
                                     {% csrf_token %}
-
-                                    <div id="SelectedProduct">
+                                    <div id="SelectedProduct" style="margin-top: 10px !important;">
                                         <label class="control-label mt-20"
                                             for="select-size"><strong>Availability</strong>:
-                                            {% if product.amount > 0  %}
-                                            In Stock
-                                            {% else %}
-                                            Out of Stock
-                                            {% endif %}
+                                            {% if product.amount > 0  %} In
+                                            Stock
+                                            {% else %} Out of Stock {% endif %} </label>
 
-                                        </label>
-
-
-                                        <div
-                                            class="product__variant--list quantity d-flex align-items-center mt-20 mb-20">
-
-
-
-                                            <div class=""><label class="control-label"
-                                                    for="input-default"><strong>Quantity:
-                                                    </strong></label>
-                                                <input name="quantity" type="number" value="" min="1" required
-                                                    max="{{ product.amount }}"
-                                                    class="form-control newsletter__subscribe--input ml-20"
-                                                    id="input-default"></div>
-                                        </div>
-
-
-                                        <button class="form-control primary__btn" type="submit"
-                                            {% if product.amount < 1  %} disabled {% endif %}>Addd To Cart</button>
-
+                                       
+                                        <!-- {% if product.amount < 10  %}
+                                        <label class="control-label" for="select-size"><strong>Items Left</strong>:
+                                            {{ product.amount }}</label>
+                                        {% endif %} -->
 
 
                                     </div>
+                                    <div class="product__variant--list quantity d-flex align-items-center mt-20 mb-20">
+
+                                        <div class=""><label class="control-label" for="input-default"><strong>Quantity:
+                                                </strong></label>
+                                            <input name="quantity" type="number" value="1" min="1" required
+                                                max="{{ product.amount }}"
+                                                class="form-control newsletter__subscribe--input ml-20"
+                                                id="input-default"></div>
+                                    </div>
+                                    {% if product.amount < 1  %}
+                                    <button class="form-control primary__btn" type="submit" disabled>Add To
+                                        Cart</button>
+                                    {% else %}
+                                    <button class="form-control primary__btn" type="submit">Add To Cart</button>
+                                    {% endif %}
+
+                                   
                                 </form>
 
 
@@ -840,26 +845,29 @@
                         <div class="product__items ">
                             <div class="product__items--thumbnail">
                                 <a class="product__items--link" href="{% url 'product_detail' rs.id rs.slug %}">
-                                    <img class="product__items--img product__primary--img"
-                                        src="{{rs.image.url}}" alt="product-img">
-                                    <img class="product__items--img product__secondary--img"
-                                        src="{{rs.image2}}" alt="product-img">
+                                    <img class="product__items--img product__primary--img" src="{{rs.image.url}}"
+                                        alt="product-img">
+                                    <img class="product__items--img product__secondary--img" src="{{rs.image2}}"
+                                        alt="product-img">
                                 </a>
-                                
+
                             </div>
                             <div class="product__items--content">
-                                <span class="product__items--content__subtitle">{{rs.category.spec}} - {{rs.category.title}}</span>
-                                <h3 class="product__items--content__title h4"><a href="{% url 'product_detail' rs.id rs.slug %}">{{rs.title}}</a></h3>
+                                <span class="product__items--content__subtitle">{{rs.category.spec}} -
+                                    {{rs.category.title}}</span>
+                                <h3 class="product__items--content__title h4"><a
+                                        href="{% url 'product_detail' rs.id rs.slug %}">{{rs.title}}</a></h3>
                                 <div class="product__items--price">
                                     <span class="current__price">₦{{rs.price|intcomma}}</span>
                                     <!-- <span class="price__divided"></span>
                                     <span class="old__price">$78</span> -->
                                 </div>
-                               
+
                                 <ul class="product__items--action d-flex">
                                     <li class="product__items--action__list">
                                         {% if rs.variant == 'None' %}
-                                        <a class="product__items--action__btn add__to--cart" href="{% url 'add_to_cart' rs.id  %}">
+                                        <a class="product__items--action__btn add__to--cart"
+                                            href="{% url 'add_to_cart' rs.id  %}">
                                             <svg class="product__items--action__btn--svg"
                                                 xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443"
                                                 viewBox="0 0 14.706 13.534">
@@ -867,36 +875,36 @@
                                                     <g>
                                                         <path data-name="Path 16787"
                                                             d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z"
-                                                            transform="translate(0 -463.248)"
-                                                            fill="currentColor"></path>
+                                                            transform="translate(0 -463.248)" fill="currentColor">
+                                                        </path>
                                                         <path data-name="Path 16788"
                                                             d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z"
-                                                            transform="translate(-1.191 -466.622)"
-                                                            fill="currentColor"></path>
+                                                            transform="translate(-1.191 -466.622)" fill="currentColor">
+                                                        </path>
                                                         <path data-name="Path 16789"
                                                             d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z"
-                                                            transform="translate(-2.875 -466.622)"
-                                                            fill="currentColor"></path>
+                                                            transform="translate(-2.875 -466.622)" fill="currentColor">
+                                                        </path>
                                                     </g>
                                                 </g>
                                             </svg>
                                             <span class="add__to--cart__text"> + Add to cart</span>
                                         </a>
                                         {% else %}
-                                        <a class="product__items--action__btn add__to--cart" href="{% url 'product_detail' rs.id rs.slug  %}">
+                                        <a class="product__items--action__btn add__to--cart"
+                                            href="{% url 'product_detail' rs.id rs.slug  %}">
                                             <img src="{% static '' %}assets/img/menu.svg" alt="" style="width: 20px;">
                                             <span class="add__to--cart__text"> + View More</span>
                                         </a>
                                         {% endif %}
 
                                     </li>
-                                    
+
                                     <li class="product__items--action__list" id="{{rs.id}}">
                                         <!-- <a class="product__items--action__btn" data-open="modal1"
                                         href="javascript:void(0)"> -->
-                                        <a class="product__items--action__btn" 
-                                        hx-get="/modal" hx-target="body"  hx-trigger="click" hx-vals='{"id": "{{rs.id}}"}' hx-swap="beforeend"
-                                        >
+                                        <a class="product__items--action__btn" hx-get="/modal" hx-target="body"
+                                            hx-trigger="click" hx-vals='{"id": "{{rs.id}}"}' hx-swap="beforeend">
                                             <svg class="product__items--action__btn--svg"
                                                 xmlns="http://www.w3.org/2000/svg" width="25.51" height="23.443"
                                                 viewBox="0 0 512 512">
@@ -904,9 +912,8 @@
                                                     d="M255.66 112c-77.94 0-157.89 45.11-220.83 135.33a16 16 0 00-.27 17.77C82.92 340.8 161.8 400 255.66 400c92.84 0 173.34-59.38 221.79-135.25a16.14 16.14 0 000-17.47C428.89 172.28 347.8 112 255.66 112z"
                                                     fill="none" stroke="currentColor" stroke-linecap="round"
                                                     stroke-linejoin="round" stroke-width="32" />
-                                                <circle cx="256" cy="256" r="80" fill="none"
-                                                    stroke="currentColor" stroke-miterlimit="10"
-                                                    stroke-width="32" /></svg>
+                                                <circle cx="256" cy="256" r="80" fill="none" stroke="currentColor"
+                                                    stroke-miterlimit="10" stroke-width="32" /></svg>
                                             <span class="visually-hidden">Quick View</span>
                                         </a>
                                     </li>
@@ -924,49 +931,6 @@
     </section>
     <!-- End product section -->
 
-    <!-- Start shipping section -->
-    <section class="shipping__section2 shipping__style3 section--padding pt-0">
-        <div class="container">
-            <div class="shipping__section2--inner shipping__style3--inner d-flex justify-content-between">
-                <div class="shipping__items2 d-flex align-items-center">
-                    <div class="shipping__items2--icon">
-                        <img src="{% static '' %}assets/img/other/shipping1.png" alt="">
-                    </div>
-                    <div class="shipping__items2--content">
-                        <h2 class="shipping__items2--content__title h3">Shipping</h2>
-                        <p class="shipping__items2--content__desc">From handpicked sellers</p>
-                    </div>
-                </div>
-                <div class="shipping__items2 d-flex align-items-center">
-                    <div class="shipping__items2--icon">
-                        <img src="{% static '' %}assets/img/other/shipping2.png" alt="">
-                    </div>
-                    <div class="shipping__items2--content">
-                        <h2 class="shipping__items2--content__title h3">Payment</h2>
-                        <p class="shipping__items2--content__desc">From handpicked sellers</p>
-                    </div>
-                </div>
-                <div class="shipping__items2 d-flex align-items-center">
-                    <div class="shipping__items2--icon">
-                        <img src="{% static '' %}assets/img/other/shipping3.png" alt="">
-                    </div>
-                    <div class="shipping__items2--content">
-                        <h2 class="shipping__items2--content__title h3">Return</h2>
-                        <p class="shipping__items2--content__desc">From handpicked sellers</p>
-                    </div>
-                </div>
-                <div class="shipping__items2 d-flex align-items-center">
-                    <div class="shipping__items2--icon">
-                        <img src="{% static '' %}assets/img/other/shipping4.png" alt="">
-                    </div>
-                    <div class="shipping__items2--content">
-                        <h2 class="shipping__items2--content__title h3">Support</h2>
-                        <p class="shipping__items2--content__desc">From handpicked sellers</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- End shipping section -->
+
 </main>
 {% endblock content %}

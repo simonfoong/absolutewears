@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import View, ListView
-
-
+import json
+from django.http import HttpResponse
+from home.forms import SearchForm
 from home.models import ContactMessage, ContactForm, Gallery, Faqs
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -68,7 +69,7 @@ def contact(request):
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
             messages.success(
-                request, "Message sent. Igwe's Palace will contact you shortly. Thank You")
+                request, "Message sent. We will contact you shortly. Thank You")
             # template = render_to_string('booking_template.html', {
             #                             'name': data1['name'],
             #                             'phone': data1['phone'],
@@ -94,7 +95,7 @@ def contact(request):
     form = ContactForm()
    
     context = {
-        'title': "Contact Igwe's Palace",
+        # 'title': "Contact Igwe's Palace",
 
         
         'form': form,
@@ -104,17 +105,7 @@ def contact(request):
     return render(request, 'home/contact.html', context)
 
 
-def events(request):
-    images = Gallery.objects.filter(category='Events')[:12]
-    
 
-    context = {
-        'title': 'Events',
-        'images': images
-       
-    }
-
-    return render(request, 'home/events.html', context)
 
 
 def about(request):
@@ -126,6 +117,52 @@ def about(request):
     }
 
     return render(request, 'home/about.html', context)
+
+
+def search(request):
+    url = request.META.get('HTTP_REFERER')
+    random_items = Product.objects.all().order_by('?')[:20]
+    if request.method == 'POST': # check post
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['query'] # get form input data
+            catid = form.cleaned_data['catid']
+            if catid==0:
+                products=Product.objects.filter(title__icontains=query)  #SELECT * FROM product WHERE title LIKE '%query%'
+            else:
+                products = Product.objects.filter(title__icontains=query,category_id=catid)
+
+            
+            context = {
+                'products': products,
+                'query':query,
+                'random_items': random_items
+            }
+            return render(request, 'home/search-products.html', context)
+    context = {
+                
+                'random_items': random_items
+            }
+
+    return render(request, 'home/search-products.html', context)
+
+
+def search_auto(request):
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+        products = Product.objects.filter(title__icontains=q)
+
+        results = []
+        for rs in products:
+            product_json = {}
+            product_json = rs.title +" > " + rs.category.title
+            results.append(product_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
 
 
 class GalleryView(ListView):
@@ -141,6 +178,8 @@ class FaqView(ListView):
     context_object_name = 'faqs'
     ordering = ['-id']
     # paginate_by = 25
+
+
 
 
 

@@ -12,5 +12,11 @@ urlpatterns = [
     path('addtoshopcart/<int:id>', views.addtoshopcart, name='add_to_cart'),
     path('deletefromcart/<int:id>/',views. deletefromcart, name='deletefromcart'),
     path('ajaxcolor/', views.ajaxcolor, name='ajaxcolor'),
+
+
+
+
+
+    path('getspinner/', views.getspinner, name='getspinner'),
     
 ]

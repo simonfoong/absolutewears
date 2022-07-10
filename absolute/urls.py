@@ -22,17 +22,16 @@ urlpatterns = [
     path('', include('home.urls')),
     path('', include('store.urls')),
     path('', include('order.urls')),
-    # path('', include('dashboard.urls')),
-    # path('', include('users.urls')),
-    # path('webpush/', include('webpush.urls')),
+    path('', include('users.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('accounts/', include('allauth.urls')),
+    path('webpush/', include('webpush.urls')),
     
 
 ]
 
 
-admin.site.index_title = "Absolute Restaurant"
+admin.site.index_title = "Absolute Wears"
 admin.site.site_header = "Absolute Admin"
 admin.site.site_title = "Absolute Admin"
 

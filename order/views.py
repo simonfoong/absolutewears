@@ -37,6 +37,7 @@ from django.template.loader import get_template, render_to_string
 from .utils import shopcart_only
 
 
+from webpush import send_user_notification
 
 # from weasyprint import HTML
 # import tempfile
@@ -207,6 +208,25 @@ def order_completed(request):
 
 
 
+def send_push(request):
+    try:
+        body = request.body
+        data = json.loads(body)
+
+        if 'head' not in data or 'body' not in data or 'id' not in data:
+            return JsonResponse(status=400, data={"message": "Invalid data format"})
+
+        user_id = data['id']
+        user = get_object_or_404(User, pk=user_id)
+        payload = {'head': data['head'], 'body': data['body']}
+        send_user_notification(user=user, payload=payload, ttl=1000)
+
+        return JsonResponse(status=200, data={"message": "Web push successful"})
+    except TypeError:
+        return JsonResponse(status=500, data={"message": "An error occurred"})
+
+
+
 # def render_pdf_view(request, *args, **kwargs):
 #     pk = kwargs.get('pk')
 #     receipt = get_object_or_404(Order, pk=pk)
@@ -252,33 +272,33 @@ def order_completed(request):
     # return response
 
 
-def showFirebaseJS(request):
-    data='importScripts("https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js");' \
-         'importScripts("https://www.gstatic.com/firebasejs/9.6.6/firebase-analytics.js"); ' \
-         'importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js"); ' \
-         'var firebaseConfig = {' \
-         '        apiKey: "AIzaSyAlSmjZuZ9NVXWZVeKGWnN6cuTWI4Gkw1M",' \
-         '        authDomain: "igwespalace-notif.firebaseapp.com",' \
-         '        projectId: "igwespalace-notif",' \
-         '        storageBucket: "igwespalace-notif.appspot.com",' \
-         '        messagingSenderId: "727967837003",' \
-         '        appId: "1:727967837003:web:93db85f2de8912757856ce",' \
-         '        measurementId: "G-E1MJJ7SXGK"' \
-         ' };' \
-         'firebase.initializeApp(firebaseConfig);' \
-         'const messaging=firebase.messaging();' \
-         'messaging.setBackgroundMessageHandler(function (payload) {' \
-         '    console.log(payload);' \
-         '    const notification=JSON.parse(payload);' \
-         '    const notificationOption={' \
-         '        body:notification.body,' \
-         '        icon:notification.icon' \
-         '    };' \
-         '    return self.registration.showNotification(payload.notification.title,notificationOption);' \
-         '});'
+# def showFirebaseJS(request):
+#     data='importScripts("https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js");' \
+#          'importScripts("https://www.gstatic.com/firebasejs/9.6.6/firebase-analytics.js"); ' \
+#          'importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js"); ' \
+#          'var firebaseConfig = {' \
+#          '        apiKey: "AIzaSyAlSmjZuZ9NVXWZVeKGWnN6cuTWI4Gkw1M",' \
+#          '        authDomain: "igwespalace-notif.firebaseapp.com",' \
+#          '        projectId: "igwespalace-notif",' \
+#          '        storageBucket: "igwespalace-notif.appspot.com",' \
+#          '        messagingSenderId: "727967837003",' \
+#          '        appId: "1:727967837003:web:93db85f2de8912757856ce",' \
+#          '        measurementId: "G-E1MJJ7SXGK"' \
+#          ' };' \
+#          'firebase.initializeApp(firebaseConfig);' \
+#          'const messaging=firebase.messaging();' \
+#          'messaging.setBackgroundMessageHandler(function (payload) {' \
+#          '    console.log(payload);' \
+#          '    const notification=JSON.parse(payload);' \
+#          '    const notificationOption={' \
+#          '        body:notification.body,' \
+#          '        icon:notification.icon' \
+#          '    };' \
+#          '    return self.registration.showNotification(payload.notification.title,notificationOption);' \
+#          '});'
 
-    return HttpResponse(data,content_type="text/javascript")
+#     return HttpResponse(data,content_type="text/javascript")
 
 
-def testview(request):
-    return render(request, 'home/test.html')
+# def testview(request):
+#     return render(request, 'home/test.html')

@@ -88,19 +88,31 @@
                     </h1>
                 </div>
                 <div class="header__search--widget header__sticky--none d-none d-lg-block">
-                    <form class="d-flex header__search--form" action="#">
+                    <form class="d-flex header__search--form" method="post" action="{% url 'search' %}">
+                        {% csrf_token %}
                         <div class="header__select--categories select">
-                            <select class="header__select--inner">
-                                <option selected value="1">All Categories</option>
-                                <option value="2">Accessories</option>
-                                <option value="3">Accessories & More</option>
-                                <option value="4">Camera & Video </option>
-                                <option value="5">Butters & Eggs </option>
+                            <select name="catid" class="header__select--inner">
+                                <option selected value="0">All Categories</option>
+                                {% for rs in category %}
+                                <option value="{{rs.id}}">{{rs.spec}} - {{rs.title}}</option>
+                               {% endfor %}
                             </select>
                         </div>
+                        <script>
+                            $( function() {
+                              var availableTags = [
+                                  {% for product in products %}
+                                      "{{product.title}}",
+                                  {% endfor %}
+                              ];
+                              $( "#search" ).autocomplete({
+                                source: availableTags
+                              });
+                            } );
+                            </script>
                         <div class="header__search--box">
                             <label>
-                                <input class="header__search--input" placeholder="Keyword here..." type="text">
+                                <input class="header__search--input" placeholder="Keyword here..." id="search" name="query" type="text">
                             </label>
                             <button class="header__search--button bg__secondary text-white" type="submit"
                                 aria-label="search button">
@@ -118,8 +130,9 @@
                 </div>
                 <div class="header__account header__sticky--none">
                     <ul class="d-flex">
+                        {% if user.is_authenticated %}
                         <li class="header__account--items">
-                            <a class="header__account--btn" href="my-account.html">
+                            <a class="header__account--btn" href="{% url 'account' %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26.51" height="23.443"
                                     viewBox="0 0 512 512">
                                     <path
@@ -133,6 +146,9 @@
                                 <span class="header__account--btn__text">My Account</span>
                             </a>
                         </li>
+                        {% else%}
+                        <li class="header__account--items"><Strong><a href="{% url 'logout' %}">Logout</a></Strong></li>
+                        {% endif %}
 
                         <li class="header__account--items">
                             <a class="header__account--btn minicart__open--btn" href="javascript:void(0)"
@@ -227,13 +243,13 @@
                                 </ul>
                             </li>
                             <li class="header__menu--items style2">
-                                <a class="header__menu--link" href="about.html">Store </a>
+                                <a class="header__menu--link" href="{% url 'store' %}">Store </a>
                             </li>
                             <li class="header__menu--items style2">
-                                <a class="header__menu--link" href="about.html">About Us </a>
+                                <a class="header__menu--link" href="{% url 'about' %}">About Us </a>
                             </li>
                             <li class="header__menu--items style2">
-                                <a class="header__menu--link" href="about.html">Contact Us </a>
+                                <a class="header__menu--link" href="{% url 'contact' %}">Contact Us </a>
                             </li>
 
                         </ul>
@@ -370,13 +386,13 @@
                                 </ul>
                             </li>
                             <li class="header__menu--items">
-                                <a class="header__menu--link" href="about.html">Store </a>
+                                <a class="header__menu--link" href="{% url 'store' %}">Store </a>
                             </li>
                             <li class="header__menu--items">
-                                <a class="header__menu--link" href="about.html">About US </a>
+                                <a class="header__menu--link" href="{% url 'about' %}">About US </a>
                             </li>
                             <li class="header__menu--items">
-                                <a class="header__menu--link" href="about.html">Contact Us </a>
+                                <a class="header__menu--link" href="{% url 'contact' %}">Contact Us </a>
                             </li>
 
                         </ul>
@@ -447,9 +463,9 @@
                         </ul>
                     </li>
 
-                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="">Store</a></li>
-                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="">About</a></li>
-                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="">Contact</a></li>
+                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{% url 'store' %}">Store</a></li>
+                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{% url 'about' %}">About</a></li>
+                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{% url 'contact' %}">Contact</a></li>
                 </ul>
                 <div class="offcanvas__account--items">
                     <a class="offcanvas__account--items__btn d-flex align-items-center" href="/login">
@@ -532,7 +548,7 @@
                 </a>
             </li>
             <li class="offcanvas__stikcy--toolbar__list">
-                <a class="offcanvas__stikcy--toolbar__btn" href="shop.html">
+                <a class="offcanvas__stikcy--toolbar__btn" href="{% url 'store' %}">
                     <span class="offcanvas__stikcy--toolbar__icon">
                         <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="18.51" height="17.443"
                             viewBox="0 0 448 512">
@@ -626,7 +642,7 @@
         <div class="minicart__amount">
             <div class="minicart__amount_list d-flex justify-content-between">
                 <span>Sub Total:</span>
-                <span>${{total|intcomma}}</span>
+                <span>₦{{total|intcomma}}</span>
             </div>
             <div class="minicart__amount_list d-flex justify-content-between">
                 <span>Delivery Fee:</span>
@@ -639,7 +655,7 @@
         </div>
         
         <div class="minicart__button d-flex justify-content-center">
-            <a class="primary__btn minicart__button--link" href="{% url 'shopcart' %}">View cart</a>
+            <!-- <a class="primary__btn minicart__button--link" href="{% url 'shopcart' %}">View cart</a> -->
             <a class="primary__btn minicart__button--link" href="{% url 'checkout' %}">Checkout</a>
         </div>
         {% else %}
@@ -650,20 +666,87 @@
     <!-- End offCanvas minicart -->
 
     <!-- Start serch box area -->
+    <!-- <script>
+        $(function() {
+            $("#query").autocomplete({
+                source: "{% url 'search_auto' %}",
+                select: function (event, ui) { //item selected
+                    AutoCompleteSelectHandler(event, ui)
+                },
+                minLength: 2,
+            });
+        });
+        function AutoCompleteSelectHandler(event, ui)
+        {
+            var selectedObj = ui.item;
+        }
+    </script> -->
+
+
     <div class="predictive__search--box ">
         <div class="predictive__search--box__inner">
-            <h2 class="predictive__search--title">Search Products</h2>
-            <form class="predictive__search--form" action="#">
-                <label>
-                    <input class="predictive__search--input" placeholder="Search Here" type="text">
-                </label>
-                <button class="predictive__search--button" aria-label="search button" type="submit"><svg
-                        class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="30.51"
-                        height="25.443" viewBox="0 0 512 512">
-                        <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none"
-                            stroke="currentColor" stroke-miterlimit="10" stroke-width="32" />
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10"
-                            stroke-width="32" d="M338.29 338.29L448 448" /></svg> </button>
+            <h2 class="predictive__search--title">Search Items</h2>
+            <!-- <form class="predictive__search--form d-flex header__search--form" action="#">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-5">
+                        <div class="header__select--categories select">
+                            <select name="catid" class="header__select--inner">
+                                <option selected value="0">All Categories</option>
+                                {% for rs in category %}
+                                <option value="{{rs.id}}">{{rs.spec}} - {{rs.title}}</option>
+                               {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <label>
+                            <input class="predictive__search--input " placeholder="Search Here" type="text">
+                        </label>
+                        <button class="predictive__search--button" aria-label="search button" type="submit"><svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path></svg>  </button>
+                    </div>
+                </div>
+                
+            </form> -->
+
+            <form class="d-flex header__search--form" method="post" action="{% url 'search' %}">
+                {% csrf_token %}
+                <div class="header__select--categories select">
+                    <select name="catid" class="header__select--inner">
+                        <option selected value="0">All Categories</option>
+                        {% for rs in category %}
+                        <option value="{{rs.id}}">{{rs.spec}} - {{rs.title}}</option>
+                       {% endfor %}
+                    </select>
+                </div>
+                <div class="header__search--box">
+                    <label>
+                        <input class="header__search--input" placeholder="Keyword here..." name="query" id="search2" type="text">
+                        <script>
+                            $( function() {
+                              var availableTags = [
+                                  {% for product in products %}
+                                      "{{product.title}}",
+                                  {% endfor %}
+                              ];
+                              $( "#search2" ).autocomplete({
+                                source: availableTags
+                              });
+                            } );
+                            </script>
+                    </label>
+                    <button class="header__search--button bg__secondary text-white" type="submit"
+                        aria-label="search button">
+                        <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg"
+                            width="27.51" height="26.443" viewBox="0 0 512 512">
+                            <path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
+                                fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32">
+                            </path>
+                            <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path>
+                        </svg>
+                    </button>
+                </div>
             </form>
         </div>
         <button class="predictive__search--close__btn" aria-label="search close button" data-offcanvas>

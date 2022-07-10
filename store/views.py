@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_POST, require_http_methods
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, request
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -80,7 +80,7 @@ def category_products(request, id, slug):
 
 class StoreCategoryView(ListView):
     model = Product
-    template_name = 'store/store_category.html'
+    template_name = 'home/store-category.html'
     context_object_name = 'products'
     ordering = ['-id']
     paginate_by = 28
@@ -89,12 +89,17 @@ class StoreCategoryView(ListView):
     def get_queryset(self):
         return Product.objects.filter(category_id=self.kwargs.get('id'))
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return 'home/products-partial.html'
+        return 'home/store-category.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)    
-        # category = Category.objects.all()
+        cat = Category.objects.get(id=self.kwargs.get('id'))
        
         context.update({'title': 'News Category - The Monkey Post', 
-                        # 'category': category,                     
+                        'cat': cat,                     
                         # 'top_trends': top_trends,                                       
                         })
         return context
@@ -381,3 +386,6 @@ def deletefromcart(request, id):
 
 
 
+def getspinner(request):
+    num = request.GET.get('num')
+    return render(request, 'home/spinner.html', {'num': num})

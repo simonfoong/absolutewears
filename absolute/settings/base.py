@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'mptt',
     "django_htmx",
+    'webpush',
     'django.contrib.admin',
     'django.contrib.humanize',
     'django.contrib.auth',
@@ -179,7 +180,8 @@ WEBPUSH_SETTINGS = {
 }
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/store/'
+LOGIN_REDIRECT_URL = '/'
+
 
 
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"

@@ -25,10 +25,12 @@ class Setting(models.Model):
     description = models.CharField(max_length=255)
     company = models.CharField(max_length=50)
     address = models.TextField(blank=True, null=True, max_length=255)
-    phone = models.CharField(blank=True, max_length=15)
+    phone = models.CharField(blank=True, max_length=16)
+    phone2 = models.CharField(blank=True, null=True, max_length=16)
     email = models.CharField(blank=True, max_length=50)
     logo = models.ImageField(blank=True, null=True, upload_to='images/logo')
     logofav = models.ImageField(blank=True, null=True, upload_to='images/logo')
+    about_us = models.TextField(blank=True, null=True, max_length=255)
     delivery_fee = models.IntegerField()
     facebook = models.CharField(blank=True, max_length=150)
     instagram = models.CharField(blank=True, max_length=150)
@@ -49,7 +51,7 @@ class ContactMessage(models.Model):
 
    
     name = models.CharField(blank=True, max_length=50)
-    email = models.CharField(blank=True, max_length=50)
+    email = models.CharField(blank=True, null=True, max_length=50)
     phone = models.IntegerField(blank=True) 
     message = models.TextField(blank=True, max_length=255)
     ip = models.CharField(blank=True, max_length=100)

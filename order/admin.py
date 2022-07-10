@@ -14,7 +14,7 @@ class OrderProductline(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name',
-                    'phone', 'total', 'status', 'ordered']
+                    'phone', 'total', 'status', 'user', 'ordered']
     list_filter = ['status', 'ordered']
     readonly_fields = ('user', 'address', 'phone',
                        'first_name', 'ip', 'last_name', 'phone', 'total', 'product')
