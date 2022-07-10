@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import get_list_or_404, get_object_or_404
 
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 
 from django.template.loader import render_to_string, get_template
@@ -75,10 +76,13 @@ def checkout(request):
             data.user_id = current_user.id
             data.total = total
             data.ip = request.META.get('REMOTE_ADDR')
-            ordercode = get_random_string(8).upper()  # random code
+            ordercode = get_random_string(length=8, allowed_chars='0123456789')  # random code
             data.code = ordercode
+            
             # for rs in shopcart:
             #     data.product_id   = rs.product_id
+            data.save()
+            # data.product.set(shopcart)
             data.save()
 
             for rs in shopcart:
@@ -91,7 +95,8 @@ def checkout(request):
                 detail.amount = rs.amount
                 detail.save()
 
-            return render(request, 'home/card-payment.html', {'orderid': data.id, 'total': total, 'title': 'Paystack Payment'})
+            # return render(request, 'home/card-payment.html', {'orderid': data.id, 'total': total, 'title': 'Paystack Payment'})
+            return HttpResponseRedirect(reverse('card', kwargs={'pk':data.id}))
 
         else:
             messages.error(request, form.errors)
@@ -108,7 +113,14 @@ def checkout(request):
                'profile': profile,
               
                }
-    return render(request, 'home/checkout.html', context)
+    return render(request, 'home/checkout-partial.html', context)
+
+def card(request, pk):
+    order = Order.objects.get(pk=pk)
+    context = {
+        'order': order
+    }
+    return render(request, 'home/card-payment.html', context)
 
 @login_required()
 def paystack(request, pk):
@@ -132,7 +144,7 @@ def paystack(request, pk):
     results = x.json()
     # print('results: ', results)
     # link = []
-    print(x.json())
+    # print(x.json())
     # print(x['data']['authorization_url'])
     link = results['data']['authorization_url']
     order.ref_code = results['data']['reference']
@@ -155,15 +167,17 @@ def order_completed(request):
         current_user = request.user
         shopcart = ShopCart.objects.filter(user_id=current_user.id)
         for rs in shopcart:
-            paid.product_id   = rs.product_id
-            paid.save()
+            # paid.product_id   = rs.product_id
+            # paid.save()
             product = Product.objects.get(id=rs.product_id)
-            product.amount_remaining -= rs.quantity
+            product.amount -= rs.quantity
             product.save()
            
         
+        paid.product.set(shopcart)
         paid.save()
-        shopcart.delete()
+        
+        # shopcart.save()
         # alert_group = User.objects.get(pk=1)
         # print(alert_group)
         # webpush = {"alert_group": 'alert_group' }
@@ -182,6 +196,7 @@ def order_completed(request):
 
     context = {
         'title': 'Order Completed - The Monkey Post',
+        'paid': paid
         # 'webpush': webpush
 
        

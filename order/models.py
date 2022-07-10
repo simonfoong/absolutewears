@@ -28,10 +28,10 @@ class Order(models.Model):
     product = models.ManyToManyField(ShopCart)
 
     ordered = models.BooleanField(default=False)
-    ref_code = models.CharField(max_length=250)
+    ref_code = models.CharField(max_length=250, unique=True)
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    code = models.CharField(max_length=8, editable=False)
+    code = models.CharField(max_length=8, editable=False, unique=True)
     first_name = models.CharField(max_length=10)
     last_name = models.CharField(max_length=10)
     phone = models.CharField(blank=True, null=True, max_length=20)
